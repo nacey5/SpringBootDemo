@@ -42,6 +42,16 @@ public class RedisServiceImpl implements RedisService {
         return result;
     }
 
+    public boolean setInLambda(final String key, final String value) throws Exception {
+        Assert.hasText(key,"Key is not empty.");
+        boolean result = redisTemplate.execute((RedisCallback<Boolean>) connection -> {
+            RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+            connection.set(serializer.serialize(key), serializer.serialize(value));
+            return true;
+        });
+        return result;
+    }
+
     public String get(final String key) throws Exception {
         Assert.hasText(key,"Key is not empty.");
         String result = redisTemplate.execute(new RedisCallback<String>() {
